@@ -39,9 +39,8 @@ services:
         value: https://knowledge-portal-comments.onrender.com
 
   # 4. React Frontend (Static Site / Web Service)
-  - type: web
+  - type: static
     name: knowledge-portal-frontend
-    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     publishDir: dist
