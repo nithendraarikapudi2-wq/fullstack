@@ -150,10 +150,11 @@ app.delete('/api/comments/:id', async (req, res) => {
 async function startServer() {
   try {
     console.log('Attempting to connect to MongoDB...');
-    await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 1500 });
-    console.log('Connected to local MongoDB.');
+    await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 15000 });
+    console.log('Connected to MongoDB database.');
   } catch (error) {
-    console.log('Local MongoDB not running. Using high-fidelity in-memory Mock MongoDB provider.');
+    console.error('MongoDB connection error:', error);
+    console.log('MongoDB connection failed. Using high-fidelity in-memory Mock MongoDB provider.');
     isMockDB = true;
   }
 
