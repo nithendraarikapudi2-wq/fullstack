@@ -94,3 +94,23 @@ Auth request example:
 ## Notes About Semantic Search
 
 The backend includes a semantic discovery endpoint that ranks content with keyword and context weighting in PostgreSQL. For production vector search, add PostgreSQL `pgvector` or MongoDB Atlas Vector Search and replace `SearchService.semanticSearch` with embedding similarity.
+
+## Deploying to Render
+
+This project contains a `render.yaml` blueprint configuration in the root directory. You can deploy the entire ecosystem (Frontend, API Gateway, Spring Boot Backend, and Node.js Backend) to Render simultaneously:
+
+1. Create a Render account at [render.com](https://render.com).
+2. Create a new PostgreSQL Database on Render. Note down the Database URL, username, and password.
+3. Push this repository to your GitHub account.
+4. On the Render Dashboard, click **New +** and select **Blueprint**.
+5. Connect your GitHub repository.
+6. Render will automatically detect the `render.yaml` file. Provide the following environment variables:
+   - For `knowledge-portal-backend`:
+     - `SPRING_DATASOURCE_URL`: The PostgreSQL Database URL.
+     - `SPRING_DATASOURCE_USERNAME`: The PostgreSQL username.
+     - `SPRING_DATASOURCE_PASSWORD`: The PostgreSQL password.
+   - For `knowledge-portal-comments`:
+     - `MONGO_URI`: A MongoDB connection string (e.g., from MongoDB Atlas). If left blank, it will automatically run in-memory!
+7. Click **Apply**. Render will automatically provision and build all services.
+
+Once deployed, the static frontend will communicate with the backends securely through the FastAPI Gateway.
