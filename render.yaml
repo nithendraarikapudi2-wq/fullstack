@@ -38,11 +38,13 @@ services:
       - key: NODE_JS_URL
         value: https://knowledge-portal-comments.onrender.com
 
-staticSites:
-  - name: knowledge-portal-frontend
+  # 4. React Frontend (Static Site)
+  - type: web
+    name: knowledge-portal-frontend
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: dist
     headers:
       - path: /*
         name: Access-Control-Allow-Origin
