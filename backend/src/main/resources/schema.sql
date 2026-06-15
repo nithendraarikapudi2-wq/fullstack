@@ -1,0 +1,35 @@
+CREATE TABLE IF NOT EXISTS authors (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS categories (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description VARCHAR(600)
+);
+
+CREATE TABLE IF NOT EXISTS app_users (
+    id BIGSERIAL PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(40) NOT NULL DEFAULT 'READER',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS documents (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    summary VARCHAR(1000) NOT NULL,
+    body TEXT NOT NULL,
+    type VARCHAR(40) NOT NULL,
+    tags VARCHAR(600),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    author_id BIGINT REFERENCES authors(id),
+    category_id BIGINT NOT NULL REFERENCES categories(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_documents_title ON documents(title);
+CREATE INDEX IF NOT EXISTS idx_documents_category ON documents(category_id);

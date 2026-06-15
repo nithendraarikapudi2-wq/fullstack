@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+# ----------------------------------------------------------------------------
+# Maven Wrapper
+# ----------------------------------------------------------------------------
+# Resolve the project directory
+PRG="$0"
+while [ -h "$PRG" ] ; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`"/$link"
+  fi
+done
+SAVED="`pwd`"
+cd "`dirname "$PRG"`"
+basedir="`pwd -P`"
+cd "$SAVED"
+
+# Wrapper properties and jar locations
+WRAPPER_DIR="$basedir/.mvn/wrapper"
+WRAPPER_JAR="$WRAPPER_DIR/maven-wrapper.jar"
+PROPERTIES_FILE="$WRAPPER_DIR/maven-wrapper.properties"
+
+if [ ! -f "$WRAPPER_JAR" ]; then
+  echo "Maven Wrapper not found. Please run 'mvn -N io.takari:maven:wrapper' from this project or download the wrapper jar."
+  exit 1
+fi
+
+JAVA_CMD=${JAVA_HOME}/bin/java
+if [ ! -x "$JAVA_CMD" ]; then
+  JAVA_CMD=java
+fi
+
+exec "$JAVA_CMD" -cp "$WRAPPER_JAR" org.apache.maven.wrapper.MavenWrapperMain "$@"
