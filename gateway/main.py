@@ -1,5 +1,6 @@
 import json
 import base64
+import os
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
@@ -15,8 +16,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-SPRING_BOOT_URL = "http://localhost:8010"
-NODE_JS_URL = "http://localhost:8020"
+SPRING_BOOT_URL = os.getenv("SPRING_BOOT_URL", "http://localhost:8010")
+NODE_JS_URL = os.getenv("NODE_JS_URL", "http://localhost:8020")
 
 client = httpx.AsyncClient()
 

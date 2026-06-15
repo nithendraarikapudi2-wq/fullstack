@@ -1,0 +1,54 @@
+services:
+  # 1. Spring Boot Backend Service
+  - type: web
+    name: knowledge-portal-backend
+    env: java
+    rootDir: backend
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/knowledge-portal-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+
+  # 2. Node.js Comments Service
+  - type: web
+    name: knowledge-portal-comments
+    env: node
+    rootDir: node-backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGO_URI
+        sync: false
+
+  # 3. FastAPI Gateway Service
+  - type: web
+    name: knowledge-portal-gateway
+    env: python
+    rootDir: gateway
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SPRING_BOOT_URL
+        value: https://knowledge-portal-backend.onrender.com
+      - key: NODE_JS_URL
+        value: https://knowledge-portal-comments.onrender.com
+
+  # 4. React Frontend (Static Site / Web Service)
+  - type: web
+    name: knowledge-portal-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    headers:
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: "*"
+    envVars:
+      - key: VITE_API_BASE
+        value: https://knowledge-portal-gateway.onrender.com/api
