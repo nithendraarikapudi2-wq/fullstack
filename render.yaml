@@ -21,7 +21,7 @@ services:
     startCommand: node server.js
     envVars:
       - key: MONGO_URI
-        value: mongodb://knowledge-portal-mongodb:27017/knowledge_portal
+        value: mongodb+srv://admin:admin123@cluster0.soaqc2y.mongodb.net/sec?retryWrites=true&w=majority&appName=Cluster0
 
   # 3. FastAPI Gateway Service
   - type: web
@@ -36,16 +36,6 @@ services:
         value: https://knowledge-portal-backend.onrender.com
       - key: NODE_JS_URL
         value: https://knowledge-portal-comments.onrender.com
-
-  # 4. MongoDB Database Service (Private Internal Service)
-  - type: pserv
-    name: knowledge-portal-mongodb
-    image: mongo:6.0
-    plan: free
-    disk:
-      name: mongodb-data
-      mountPath: /data/db
-      sizeGB: 1
 
 staticSites:
   - name: knowledge-portal-frontend
