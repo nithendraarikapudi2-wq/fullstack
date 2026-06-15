@@ -4,30 +4,31 @@ services:
     name: knowledge-portal-backend
     env: docker
     rootDir: backend
+    plan: free
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false
-      - key: SPRING_DATASOURCE_USERNAME
-        sync: false
-      - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        fromDatabase:
+          name: knowledge-portal-postgres
+          property: connectionString
 
   # 2. Node.js Comments Service
   - type: web
     name: knowledge-portal-comments
     env: node
     rootDir: node-backend
+    plan: free
     buildCommand: npm install
     startCommand: node server.js
     envVars:
       - key: MONGO_URI
-        sync: false
+        value: mongodb://knowledge-portal-mongodb:27017/knowledge_portal
 
   # 3. FastAPI Gateway Service
   - type: web
     name: knowledge-portal-gateway
     env: python
     rootDir: gateway
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -36,13 +37,21 @@ services:
       - key: NODE_JS_URL
         value: https://knowledge-portal-comments.onrender.com
 
-  # 4. React Frontend (Static Site)
-  - type: web
-    name: knowledge-portal-frontend
-    runtime: static
+  # 4. MongoDB Database Service (Private Internal Service)
+  - type: pserv
+    name: knowledge-portal-mongodb
+    image: mongo:6.0
+    plan: free
+    disk:
+      name: mongodb-data
+      mountPath: /data/db
+      sizeGB: 1
+
+staticSites:
+  - name: knowledge-portal-frontend
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    publishDir: dist
     headers:
       - path: /*
         name: Access-Control-Allow-Origin
@@ -50,3 +59,9 @@ services:
     envVars:
       - key: VITE_API_BASE
         value: https://knowledge-portal-gateway.onrender.com/api
+
+databases:
+  - name: knowledge-portal-postgres
+    databaseName: knowledge_portal
+    user: knowledge_user
+    plan: free
